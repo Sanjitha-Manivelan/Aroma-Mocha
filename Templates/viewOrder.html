@@ -4,10 +4,8 @@
  <h1>Order placed!</h1>
  <h2>Drinks Ordered: </h2>
    <ul>
-     {% for i in range (0,length,1) %}
+     {% for i in range (0,length+1,1) %}
       <center><h3>{{list[i]}}</h3></center>
     {% endfor %}
-<br>
-<button type="submit" name="button"><a href="/sign-out">Sign-out</a></button>
    </ul>
 </center>

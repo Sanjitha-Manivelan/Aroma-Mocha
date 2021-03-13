@@ -135,24 +135,24 @@ def employee_val():
 @app.route('/viewOrder', methods=['GET','POST'])
 def checkout_drink():
     list=[]
+    form=AddForm()
     #all_drinks=['cookies','cookies & cream','chocolate cake','chocolate fudge brownies', "blueberry drink", "mango and raspberry drink", "tropical drink", "cherry milk shake"]
-    if(request.form.get("cookies")=="on"):
-        list.append("cookies")
-    if(request.form.get("cookies & cream")=="on"):
-        list.append("cookies & cream")
-    if(request.form.get("chocolate cake")=="on"):
-        list.append("chocolate cake")
-    if(request.form.get("chocolate fudge brownies")=="on"):
-        list.append("chocolate fudge brownies")
-    if(request.form.get("blueberry drink")=="on"):
-        list.append("blueberry drink")
-    if(request.form.get("mango and raspberry drink")=="on"):
-        list.append("mango and raspberry drink")
-    if(request.form.get("tropical drink")=="on"):
-        list.append("tropical drink")
-    if(request.form.get("cherry milk shake")=="on"):
-        list.append("cherry milk shake")
+    if(request.args.get("Cookies")=="on"):
+        list.append("Cookies")
+    if(request.args.get("Cookies&Cream")=="on"):
+        list.append("Cookies&Cream")
+    if(request.args.get("Chocolate Cake")=="on"):
+        list.append("Chocolate Cake")
+    if(request.args.get("Chocolate Fudge Brownies")=="on"):
+        list.append("Chocolate Fudge Brownies")
+    if(request.args.get("Blueberry Drink")=="on"):
+        list.append("Blueberry Drink")
+    if(request.args.get("Mango & Raspberry Drink")=="on"):
+        list.append("Mango & Raspberry Drink")
+    if(request.args.get("The Tropical Drink")=="on"):
+        list.append("The Tropical Drink")
     length=len(list)
+    print(list)
     return render_template('viewOrder.html',list=list,length=length)
 
 
