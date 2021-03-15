@@ -56,7 +56,7 @@ class OrderDetail(db.Model):
         self.price = price
         self.amount = amount
 
-@app.route('/home', methods=['GET'])
+@app.route('/', methods=['GET'])
 def home():
 
     return render_template('home.html')
