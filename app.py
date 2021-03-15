@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecretkey'
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(basedir,'data.sqlite')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(basedir,'Aroma_Mocha')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -30,16 +30,36 @@ class Users(db.Model):
   def __repr__(self):
       return f"User name: {self.username} {self.password} {self.userType}"
 
+class Order(db.Model):
+    __tablename__='orders'
+    #orderID = db.Column(db.Integer,primary_key=True, autoincrement=True)
+    orderID = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.Text)
+    orderStatus = db.Column(db.Text)
+    def __init__(self, username, orderStatus):
+        #self.orderID = orderID
+        self.username = username
+        self.orderStatus=orderStatus
 
+class OrderDetail(db.Model):
+    __tablename__='orderDetails'
+    orderDetailID = db.Column(db.Integer,primary_key=True, autoincrement=True)
+    orderID = db.Column(db.Integer)
+    products = db.Column(db.Text)
+    quantity = db.Column(db.Text)
+    price = db.Column(db.Text)
+    amount = db.Column(db.Text)
+    def __init__(self,orderID, products, quantity, price, amount):
+        self.orderID = orderID
+        self.products = products
+        self.quantity = quantity
+        self.price = price
+        self.amount = amount
 
-#@app.route('/')
-#def index():
- # return render_template('Homepage.html')
+@app.route('/home', methods=['GET'])
+def home():
 
-#@app.route('/home')
-#def home():
-#    return render_template('home.html')
-
+    return render_template('home.html')
 
 
 @app.route('/signup', methods=['GET'])
@@ -132,29 +152,60 @@ def employee_val():
         print('fail')
         return render_template('login_employee.html', fail=fail)
 
+@app.route('/placeOrder', methods=['GET'])
+def placeOrder():
+    return render_template('placeOrder.html')
+
+@app.route('/orderSubmitted', methods=['GET','POST'])
+def orderSubmitted(list):
+    print(list)
+    return render_template('orderSubmitted.html',list=list)
+
+
 @app.route('/viewOrder', methods=['GET','POST'])
-def checkout_drink():
+def viewOrder():
     list=[]
+    orderList=[]
     form=AddForm()
     #all_drinks=['cookies','cookies & cream','chocolate cake','chocolate fudge brownies', "blueberry drink", "mango and raspberry drink", "tropical drink", "cherry milk shake"]
-    if(request.args.get("Cookies")=="on"):
-        list.append("Cookies")
-    if(request.args.get("Cookies&Cream")=="on"):
-        list.append("Cookies&Cream")
-    if(request.args.get("Chocolate Cake")=="on"):
-        list.append("Chocolate Cake")
-    if(request.args.get("Chocolate Fudge Brownies")=="on"):
-        list.append("Chocolate Fudge Brownies")
-    if(request.args.get("Blueberry Drink")=="on"):
-        list.append("Blueberry Drink")
-    if(request.args.get("Mango & Raspberry Drink")=="on"):
-        list.append("Mango & Raspberry Drink")
-    if(request.args.get("The Tropical Drink")=="on"):
-        list.append("The Tropical Drink")
-    length=len(list)
-    print(list)
-    return render_template('viewOrder.html',list=list,length=length)
+    allProducts = ["Cookies","Cookies&Cream", "Chocolate Cake", "Chocolate Fudge Brownies"
+    ,"Blueberry Drink", "Mango & Raspberry Drink","The Tropical Drink"]
 
+    userName = ""
+    status = "Pending"
+    order = Order(userName, status)
+
+    db.session.add(order)
+    db.session.commit()
+    for i in range(0,len(allProducts)-1):
+        if(request.args.get(allProducts[i])=="on"):
+            quantity = 1
+            price = 10
+            orderDetail = OrderDetail(order.orderID, allProducts[i],quantity,price,quantity * price)
+            orderList.append(orderDetail)
+            db.session.add(orderDetail)
+    db.session.commit()
+    length=len(allProducts)
+    print(list)
+    return render_template('viewOrder.html',list=list, orderList=orderList,length=length)
+
+@app.route('/employee/viewOrderDetail', methods=['GET'])
+def viewOrderDetail():
+    orderID = request.args.get("orderID")
+    orderDetails = db.session.query(OrderDetail).filter_by(orderID=orderID).all()
+    length = len(orderDetails)
+    return render_template('viewOrderDetail.html',orderList=orderDetails,length=length)
+
+@app.route('/employee/viewAllOrders', methods=['GET'])
+def viewAllOrders():
+
+    orders = db.session.query(Order).all()
+    length = len(orders)
+    return render_template('viewAllOrders.html',orderList=orders,length=length)
+
+@app.route('/changeStatus')
+def changeStatus():
+    return render_template('changeStatus.html')
 
 if __name__ == "__main__":
     app.run()

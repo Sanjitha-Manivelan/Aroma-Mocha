@@ -8,37 +8,42 @@
  <table>
    <tr>
      <td width="200px">
+       <b>Order ID</b>
+     </td>
+     <td width="70px">
        <b>Product Name</b>
      </td>
-      <td width="30px">
+      <td width="70px">
         <b>Quantity</b>
       </td>
-      <td width="30px">
+      <td width="70px">
         <b>Price</b>
       </td>
-      <td width="30px">
+      <td width="70px">
         <b>Amount</b>
       </td>
    </tr>
   {% for p in orderList %}
   <tr>
     <td width="200px">
+      {{p.orderID}}
+    </td>
+    <td width="100px">
       {{p.products}}
     </td>
-     <td width="30px">
+     <td width="100px">
        {{p.quantity}}
      </td>
-     <td width="30px">
+     <td width="100px">
        {{p.price}}
      </td>
-     <td width="30px">
+     <td width="100px">
        {{p.amount}}
      </td>
   </tr>
   {% endfor %}
 </table>
-
-   <a href="/placeOrder">Edit Order</a>
-     <a href=/orderSubmitted>
-     <button type="submit" name="button" class="btn btn-primary">Submit</button>
+    <a href="/changeStatus">
+    <button type="button" name="button">Change Status</button>
+    </a>
 </center>
